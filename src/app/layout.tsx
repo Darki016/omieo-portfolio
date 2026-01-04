@@ -67,16 +67,19 @@ export const metadata: Metadata = {
   },
 };
 
+import { SpeedInsights } from "@vercel/speed-insights/next"
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark scroll-smooth">
       <body
         className={`${outfit.variable} ${jetbrainsMono.variable} antialiased text-foreground`}
       >
+        <SpeedInsights />
         <ThemeProvider>
           <AmbientBackground />
           <Navbar />
