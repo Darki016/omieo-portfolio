@@ -185,7 +185,7 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
                             muted
                             loop
                             playsInline
-                            preload="auto"
+                            preload="none"
                         />
                     </div>
 

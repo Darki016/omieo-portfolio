@@ -138,8 +138,8 @@ export default function Hero() {
                                         src="/profile.png"
                                         alt="Profile"
                                         fill
-                                        className="object-cover"
                                         priority
+                                        className="object-cover opacity-90 hover:scale-105 transition-transform duration-700"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
