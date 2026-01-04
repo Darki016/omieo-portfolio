@@ -1,26 +1,198 @@
 @import "tailwindcss";
 
+@theme {
+  --font-outfit: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light Mode ("NextPure" - Cream & Pink Aesthetic) */
+  --bg-deep: #FFFBF7;
+  /* Creamish White */
+
+  /* Glass - Warm/Pinkish Tint */
+  --glass-border: rgba(137, 97, 97, 0.1);
+  --glass-surface: rgba(255, 251, 247, 0.75);
+  /* Slightly more opaque for 3D feel */
+  --glass-highlight: rgba(255, 255, 255, 0.95);
+
+  /* 3D Depth Shadows (Alive Effect) */
+  --glass-shadow:
+    0 10px 30px -5px rgba(87, 37, 37, 0.1),
+    0 4px 10px -2px rgba(87, 37, 37, 0.05);
+
+  --glass-shadow-hover:
+    0 25px 50px -12px rgba(87, 37, 37, 0.25),
+    0 10px 20px -5px rgba(87, 37, 37, 0.1);
+
+  /* Text Colors - Darker Maroon for Visibility */
+  --text-primary: #2C0B0B;
+  /* Very Dark Maroon */
+  --text-secondary: #5D2525;
+  /* Deep Maroon */
+  --text-tertiary: #8F5E5E;
+  /* Earthy Brown */
+
+  /* Accents */
+  --accent-glow: rgba(230, 166, 167, 0.2);
+
+  /* Gradient colors for Ambient Background - Soft Pinks */
+  --orb-color-1: rgba(230, 166, 167, 0.4);
+  /* #E6A6A7 */
+  --orb-color-2: rgba(204, 161, 161, 0.4);
+  /* #CCA1A1 */
+  --orb-color-3: rgba(255, 251, 247, 0.8);
+  /* Blend with bg */
+
+  /* Scrollbar - Dark Maroon */
+  --scrollbar-thumb: #5D2525;
+  /* Deep Maroon */
+  --scrollbar-thumb-hover: #2C0B0B;
+  /* Very Dark Maroon */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+.dark {
+  /* Dark Mode ("Deep Cosmic" - Pitch Black Variant) */
+  --bg-deep: #000000;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Glass - "Phantom Glass" Aesthetic */
+  /* Stronger 10% -> 0% Gradient for visibility */
+  --glass-surface: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0.00) 100%);
+
+  --glass-border: rgba(255, 255, 255, 0.08);
+  /* Brighter edge */
+  --glass-highlight: rgba(255, 255, 255, 0.15);
+  /* Hover shine */
+
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  /* Deep depth */
+  --glass-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.8);
+
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #a3a3a3;
+  --text-tertiary: #525252;
+
+  --accent-glow: rgba(255, 255, 255, 0.1);
+  /* Gradient colors for Ambient Background - Pitch Black (No Orbs) */
+  --orb-color-1: rgba(0, 0, 0, 0);
+  --orb-color-2: rgba(0, 0, 0, 0);
+  --orb-color-3: rgba(0, 0, 0, 0);
+
+  /* Dark Mode - Phantom Glass (Enhanced Visibility) */
+  --glass-surface: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      /* Increased from 0.06 */
+      rgba(255, 255, 255, 0.03) 100%
+      /* Increased from 0.00 */
+    );
+  --glass-border: rgba(255, 255, 255, 0.15);
+  /* Sharper border (was 0.08) */
+  --glass-highlight: rgba(255, 255, 255, 0.3);
+  /* Brighter highlight */
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --glass-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.9);
+
+  /* Text Colors - High Contrast */
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #52525b;
+
+  --hover-bg: rgba(255, 255, 255, 0.08);
+  /* More visible hover */
+
+  --accent-glow: rgba(255, 255, 255, 0.1);
+
+  /* Scrollbar - Dark Grey */
+  --scrollbar-thumb: #334155;
+  --scrollbar-thumb-hover: #475569;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-outfit);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+
+  /* Seamless Slow Transition - Optimized */
+  /* Reduced to 0.3s for mobile performance (Snappy > Laggy Fade) */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Universal "Premium Glass" Class */
+.glass-panel,
+.glass-card {
+  background: var(--glass-surface);
+  backdrop-filter: blur(20px);
+  /* Reduced blur slightly to keep details sharp */
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
+    /* Top edge highlight */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+    /* Inner ring */
+    var(--glass-shadow);
+  /* Optimized: REMOVED background/border transitions to prevent mobile lag. 
+     Only animate transform/shadow for hover states. */
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+}
+
+.glass-panel:hover,
+.glass-card:hover {
+  background: var(--hover-bg, var(--glass-surface));
+  border-color: var(--glass-highlight);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+    /* Brighter top edge on hover */
+    var(--glass-shadow-hover);
+  transform: translateY(-4px);
+}
+
+/* Gradient Text Utilities */
+.text-gradient-medic {
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-dev {
+  background: linear-gradient(135deg, #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+  transition: background 1.5s ease;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Remove default focus outlines for mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Custom Selection Color */
+::selection {
+  background: rgba(167, 139, 250, 0.3);
+  color: var(--text-primary);
 }
