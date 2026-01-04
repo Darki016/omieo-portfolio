@@ -135,7 +135,7 @@ export default function Hero() {
                             <div className="absolute inset-0 backface-hidden glass-card rounded-[32px] p-2 rotate-3 group-hover:rotate-0 transition-transform duration-500 overflow-hidden">
                                 <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-black">
                                     <Image
-                                        src="/profile.png"
+                                        src="/profile.webp"
                                         alt="Profile"
                                         fill
                                         priority
