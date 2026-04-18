@@ -123,11 +123,13 @@ export default function Projects() {
 function ProjectCard({ project, index }: { project: any, index: number }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const playPromiseRef = useRef<Promise<void> | null>(null);
 
     const handleMouseEnter = () => {
         setIsPlaying(true);
         if (videoRef.current) {
-            videoRef.current.play().catch(error => {
+            playPromiseRef.current = videoRef.current.play();
+            playPromiseRef.current.catch(error => {
                 if (error.name !== 'AbortError') {
                     console.error("Video play failed:", error);
                 }
@@ -138,8 +140,19 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
     const handleMouseLeave = () => {
         setIsPlaying(false);
         if (videoRef.current) {
-            videoRef.current.pause();
-            videoRef.current.currentTime = 0; // Reset to start
+            if (playPromiseRef.current !== null) {
+                playPromiseRef.current.then(() => {
+                    if (videoRef.current) {
+                        videoRef.current.pause();
+                        videoRef.current.currentTime = 0;
+                    }
+                }).catch(() => {
+                    // Already handled in handleMouseEnter
+                });
+            } else {
+                videoRef.current.pause();
+                videoRef.current.currentTime = 0;
+            }
         }
     };
 
@@ -201,7 +214,7 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
                             muted
                             loop
                             playsInline
-                            preload="none"
+                            preload="metadata"
                         />
                     </div>
 
