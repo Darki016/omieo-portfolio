@@ -1,12 +1,24 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ExternalLink, Monitor, Globe, PenTool, Gamepad2, Calculator } from "lucide-react";
+import { ExternalLink, Monitor, Globe, PenTool, Gamepad2, Calculator, ShoppingBag } from "lucide-react";
 import { useState, useRef } from "react";
 import clsx from "clsx";
 import MysticQuote from "@/components/MysticQuote";
 
 const projects = [
+    {
+        id: "needs-and-fancy",
+        title: "Needs and Fancy",
+        subtitle: "COMMERCE_QUEST",
+        desc: "A premium ecommerce ecosystem developed with WordPress and WooCommerce. Featuring a custom user experience, streamlined checkout, and mobile-first design.",
+        tags: ["WordPress", "WooCommerce", "Ecommerce"],
+        color: "text-emerald-400",
+        thumb: <ShoppingBag className="w-10 h-10" />,
+        video: "/needs-and-fancy.webm",
+        link: "https://needsandfancy.com/",
+        glow: "52, 211, 153" // Emerald
+    },
     {
         id: "lofi-timer",
         title: "Lofi Timer",

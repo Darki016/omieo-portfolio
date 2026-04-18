@@ -40,7 +40,7 @@ export default function Hero() {
                         </div>
 
                         <h1 className="text-5xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-[var(--text-primary)] leading-[0.9] transition-colors duration-1000">
-                            OMIEO
+                            OMIEO ZAMAN
                             <motion.span
                                 animate={{ scale: [1, 1.5, 1], opacity: [1, 0.8, 1] }}
                                 transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -136,7 +136,7 @@ export default function Hero() {
                                 <div className="relative w-full h-full rounded-[24px] overflow-hidden bg-black">
                                     <Image
                                         src="/profile.webp"
-                                        alt="Profile"
+                                        alt="Omieo Zaman"
                                         fill
                                         priority
                                         className="object-cover opacity-90 hover:scale-105 transition-transform duration-700"
