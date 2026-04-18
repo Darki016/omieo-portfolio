@@ -127,7 +127,11 @@ function ProjectCard({ project, index }: { project: any, index: number }) {
     const handleMouseEnter = () => {
         setIsPlaying(true);
         if (videoRef.current) {
-            videoRef.current.play();
+            videoRef.current.play().catch(error => {
+                if (error.name !== 'AbortError') {
+                    console.error("Video play failed:", error);
+                }
+            });
         }
     };
 
