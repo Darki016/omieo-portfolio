@@ -52,7 +52,7 @@ export default function About() {
             icon: <Terminal className="w-6 h-6" />,
             color: "text-violet-400",
             content: [
-                "I build WordPress and WooCommerce sites for e-commerce clients, mostly in Bangladesh. No boilerplate packages, no copy-paste themes. If you need a store that actually sells, I'll build it properly."
+                "I am a freelance WordPress developer and WooCommerce specialist based in Dhaka, Bangladesh. I build high-performance e-commerce sites for local and international clients. No boilerplate packages, no copy-paste themes. If you need a store that actually sells, I'll build it properly."
             ]
         }
     };
