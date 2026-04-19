@@ -16,8 +16,8 @@ export default function PageLoader() {
             {loading && (
                 <motion.div
                     initial={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    exit={{ opacity: 0, y: "-100%" }}
+                    transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
                     className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[var(--bg-deep)]"
                 >
                     <div className="flex flex-col items-center gap-6">
@@ -34,9 +34,9 @@ export default function PageLoader() {
                             <div className="h-full bg-[var(--text-primary)] rounded-full loader-bar" />
                         </div>
 
-                        {/* Booting text */}
+                        {/* Loading text */}
                         <span className="text-xs text-[var(--text-tertiary)] font-mono tracking-widest uppercase loader-text">
-                            BOOTING...
+                            Omieo.sys loading...
                         </span>
                     </div>
                 </motion.div>

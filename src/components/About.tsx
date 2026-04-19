@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Activity, Terminal, ArrowRight } from "lucide-react";
 import clsx from "clsx";
 
@@ -11,6 +11,8 @@ export default function About() {
     const tabs: Tab[] = ["medic", "dev"];
     const [activeTab, setActiveTab] = useState<Tab>("medic");
     const [direction, setDirection] = useState(0);
+    const headingRef = useRef<HTMLHeadingElement>(null);
+    const sectionRef = useRef<HTMLElement>(null);
 
     const handleTabChange = (newTab: Tab) => {
         if (newTab === activeTab) return;
@@ -18,6 +20,62 @@ export default function About() {
         setDirection(newDirection);
         setActiveTab(newTab);
     };
+
+    // GSAP ScrollTrigger for kinetic "The Dual-Life" heading and staggered children
+    useEffect(() => {
+        let ctx: any;
+
+        const initGSAP = async () => {
+            const gsap = (await import("gsap")).default;
+            const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+            gsap.registerPlugin(ScrollTrigger);
+
+            ctx = gsap.context(() => {
+                // Kinetic scroll-scale effect on "The Dual-Life" heading
+                if (headingRef.current) {
+                    gsap.fromTo(
+                        headingRef.current,
+                        { scale: 1.3, opacity: 0.3 },
+                        {
+                            scale: 1,
+                            opacity: 1,
+                            ease: "power2.out",
+                            scrollTrigger: {
+                                trigger: headingRef.current,
+                                start: "top 90%",
+                                end: "top 40%",
+                                scrub: 1,
+                            },
+                        }
+                    );
+                }
+
+                // Stagger children elements into view
+                gsap.fromTo(
+                    ".about-stagger",
+                    { y: 40, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.8,
+                        stagger: 0.15,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: sectionRef.current,
+                            start: "top 70%",
+                            toggleActions: "play none none none",
+                        },
+                    }
+                );
+            }, sectionRef);
+        };
+
+        initGSAP();
+
+        return () => {
+            if (ctx) ctx.revert();
+        };
+    }, []);
 
     const variants = {
         enter: (direction: number) => ({
@@ -58,42 +116,34 @@ export default function About() {
     };
 
     return (
-        <section id="about" className="relative w-full section-spacing px-6 flex flex-col items-center overflow-hidden">
-            <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="max-w-5xl w-full z-10 will-change-transform"
-            >
+        <section id="about" ref={sectionRef} className="relative w-full section-spacing px-6 flex flex-col items-center overflow-hidden">
+            <div className="max-w-5xl w-full z-10 will-change-transform">
                 {/* Section Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-center mb-16 space-y-4"
-                >
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 15 }}
-                        className="relative inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-xs font-medium text-[var(--text-secondary)] mb-4 mx-auto"
-                    >
-                        <span>Character Stats</span>
-                    </motion.div>
+                <div className="relative text-center mb-16 space-y-4">
+                    {/* Oversized Section Number */}
+                    <span className="section-number">01</span>
 
-                    <h2 className="text-4xl md:text-6xl font-bold text-[var(--text-primary)] tracking-tight">
+                    <div className="about-stagger">
+                        <div
+                            className="relative inline-flex items-center gap-2 px-3 py-1 rounded-full glass-pill text-xs font-medium text-[var(--text-secondary)] mb-4 mx-auto"
+                        >
+                            <span>Character Stats</span>
+                        </div>
+                    </div>
+
+                    <h2
+                        ref={headingRef}
+                        className="text-4xl md:text-6xl font-bold text-[var(--text-primary)] tracking-tight font-display"
+                    >
                         The <span className="text-[var(--text-secondary)] pr-1 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--text-tertiary)]">Dual-Life</span>.
                     </h2>
-                    <p className="text-[var(--text-secondary)] max-w-lg mx-auto text-lg">
+                    <p className="text-[var(--text-secondary)] max-w-lg mx-auto text-lg about-stagger">
                         Navigating two different worlds with the same surgical precision.
                     </p>
-                </motion.div>
+                </div>
 
                 {/* iOS-style Glass Segmented Control */}
-                <div className="flex justify-center mb-10">
+                <div className="flex justify-center mb-10 about-stagger">
                     <div className="relative flex p-1 rounded-full liquid-glass">
                         {/* Sliding indicator */}
                         <motion.div
@@ -130,7 +180,7 @@ export default function About() {
                 </div>
 
                 {/* Content Card - Liquid Glass */}
-                <div className="liquid-glass relative min-h-[300px] p-6 md:p-14 overflow-hidden">
+                <div className="liquid-glass relative min-h-[300px] p-6 md:p-14 overflow-hidden about-stagger">
                     <AnimatePresence mode="popLayout" custom={direction}>
                         <motion.div
                             key={activeTab}
@@ -174,17 +224,13 @@ export default function About() {
                                 ))}
                             </div>
 
-                            {/* Footer Decoration */}
-                            <div className="absolute bottom-6 right-6 flex items-center gap-2 opacity-30">
-                                <ArrowRight className="w-4 h-4 text-[var(--text-primary)]" />
-                                <span className="text-xs font-mono text-[var(--text-primary)]">SCROLL_FOR_STATS</span>
-                            </div>
+
 
                         </motion.div>
                     </AnimatePresence>
                 </div>
 
-            </motion.div>
+            </div>
         </section>
     );
 }

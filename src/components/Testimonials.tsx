@@ -38,10 +38,11 @@ export default function Testimonials() {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="text-center mb-20"
                 >
+                    <span className="section-number">06</span>
                     <span className="inline-block py-1 px-3 rounded-full glass-pill text-xs text-[var(--text-secondary)] font-mono tracking-widest uppercase mb-4">
                         Social Proof
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal">
+                    <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal font-display">
                         What Clients{" "}
                         <span className="inline-block text-[var(--text-secondary)] pr-3 pb-1 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--text-tertiary)]">
                             Say.

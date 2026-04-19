@@ -9,11 +9,13 @@ import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
+import MarqueeTicker from "@/components/MarqueeTicker";
 
 export default function Home() {
   return (
     <main className="flex flex-col min-h-screen text-white selection:bg-purple-500/30 page-fade-in">
       <Hero />
+      <MarqueeTicker />
       <ScrollReveal><StatsBar /></ScrollReveal>
       <ScrollReveal><About /></ScrollReveal>
       <ScrollReveal><Skills /></ScrollReveal>

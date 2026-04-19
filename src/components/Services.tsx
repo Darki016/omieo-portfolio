@@ -2,6 +2,7 @@
 
 import { motion, Variants } from "framer-motion";
 import clsx from "clsx";
+import { useEffect, useRef } from "react";
 
 const pricingCards = [
     {
@@ -60,26 +61,44 @@ const pricingCards = [
     },
 ];
 
-const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.1
-        }
-    }
-};
-
-const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    show: {
-        opacity: 1,
-        y: 0,
-        transition: { type: "spring", stiffness: 100, damping: 15 }
-    }
-};
-
 export default function Services() {
+    const sectionRef = useRef<HTMLElement>(null);
+
+    // GSAP ScrollTrigger for staggered service cards
+    useEffect(() => {
+        let ctx: any;
+
+        const initGSAP = async () => {
+            const gsap = (await import("gsap")).default;
+            const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+            gsap.registerPlugin(ScrollTrigger);
+
+            ctx = gsap.context(() => {
+                gsap.fromTo(
+                    ".service-card",
+                    { y: 50, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.6,
+                        stagger: 0.1,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: sectionRef.current,
+                            start: "top 65%",
+                            toggleActions: "play none none none",
+                        },
+                    }
+                );
+            }, sectionRef);
+        };
+
+        initGSAP();
+
+        return () => {
+            if (ctx) ctx.revert();
+        };
+    }, []);
 
     const handleServiceClick = (template: string) => {
         const event = new CustomEvent('prefill-contact', { detail: template });
@@ -92,47 +111,46 @@ export default function Services() {
     };
 
     return (
-        <section id="services" className="relative w-full section-spacing px-6 flex flex-col items-center overflow-hidden">
+        <section id="services" ref={sectionRef} className="relative w-full section-spacing px-6 flex flex-col items-center overflow-hidden">
             <div className="relative z-10 max-w-6xl w-full">
 
                 {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-center mb-20"
-                >
+                <div className="relative text-center mb-20">
+                    {/* Oversized Section Number */}
+                    <span className="section-number">05</span>
+
                     <span className="inline-block py-1 px-3 rounded-full glass-pill text-xs text-[var(--text-secondary)] font-mono tracking-widest uppercase mb-4">
                         The Market
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal">
+                    <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal font-display">
                         Merchant <span className="inline-block text-[var(--text-secondary)] pr-3 pb-1 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--text-tertiary)]">Services.</span>
                     </h2>
-                </motion.div>
+                </div>
 
-                <motion.div variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }}>
+                <div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {pricingCards.map((card, idx) => (
-                            <motion.div
+                            <div
                                 key={idx}
-                                variants={itemVariants}
-                                onClick={() => handleServiceClick(card.template)}
-                                className="liquid-glass group relative p-8 flex flex-col cursor-pointer overflow-hidden"
+                                className="service-card liquid-glass group relative p-8 flex flex-col cursor-pointer overflow-hidden"
                                 style={{
+                                    opacity: 0,
                                     transition: "all 0.3s ease",
                                 }}
+                                onClick={() => handleServiceClick(card.template)}
                                 onMouseEnter={(e) => {
                                     const el = e.currentTarget as HTMLElement;
                                     el.style.backdropFilter = "blur(40px) saturate(200%)";
                                     el.style.borderColor = `rgba(${card.glow}, 0.25)`;
                                     el.style.boxShadow = `0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px rgba(${card.glow}, 0.15)`;
+                                    el.style.transform = "translateY(-4px)";
                                 }}
                                 onMouseLeave={(e) => {
                                     const el = e.currentTarget as HTMLElement;
                                     el.style.backdropFilter = "blur(24px) saturate(180%)";
                                     el.style.borderColor = "rgba(255, 255, 255, 0.10)";
                                     el.style.boxShadow = "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)";
+                                    el.style.transform = "translateY(0)";
                                 }}
                             >
                                 {/* Delivery badge - top right */}
@@ -161,14 +179,14 @@ export default function Services() {
                                         Click to inquire →
                                     </span>
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
 
                     {/* Rules of Engagement */}
-                    <motion.div
-                        variants={itemVariants}
-                        className="liquid-glass mt-8 px-6 py-6 flex flex-col md:flex-row items-start md:items-center gap-6 text-xs text-[var(--text-secondary)]"
+                    <div
+                        className="service-card liquid-glass mt-8 px-6 py-6 flex flex-col md:flex-row items-start md:items-center gap-6 text-xs text-[var(--text-secondary)]"
+                        style={{ opacity: 0 }}
                     >
                         <div className="flex items-center gap-2 text-rose-400 shrink-0">
                             <span className="font-bold uppercase tracking-wider text-sm">Rules of Engagement</span>
@@ -188,8 +206,8 @@ export default function Services() {
                                 Two rounds included. Extras billed hourly.
                             </div>
                         </div>
-                    </motion.div>
-                </motion.div>
+                    </div>
+                </div>
             </div>
         </section>
     );

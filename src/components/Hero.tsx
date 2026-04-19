@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Activity, Code2, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import MysticQuote from "@/components/MysticQuote";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const subtitles = ["Medical Student", "Full-Stack Developer"];
 
@@ -69,8 +70,8 @@ function MagneticButton({ children, onClick, className }: { children: React.Reac
         const distY = e.clientY - centerY;
         const dist = Math.sqrt(distX * distX + distY * distY);
 
-        if (dist < 60) {
-            const pullStrength = 0.3;
+        if (dist < 80) {
+            const pullStrength = 0.25;
             btnRef.current.style.transform = `translate(${distX * pullStrength}px, ${distY * pullStrength}px)`;
         }
     }, []);
@@ -99,10 +100,63 @@ export default function Hero() {
     const [mounted, setMounted] = useState(false);
     const [isFlipped, setIsFlipped] = useState(false);
     const subtitle = useTypewriter(subtitles);
+    const headlineRef = useRef<HTMLHeadingElement>(null);
 
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    // GSAP ScrollTrigger for "The Dual-Life" kinetic scale — moved to About section as requested
+    // Hero only handles the name letter stagger with GSAP
+    useEffect(() => {
+        if (!mounted) return;
+
+        let gsapModule: any;
+        let scrollTriggerModule: any;
+
+        const initGSAP = async () => {
+            gsapModule = (await import("gsap")).default;
+            const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+            scrollTriggerModule = ScrollTrigger;
+            gsapModule.registerPlugin(ScrollTrigger);
+
+            // Stagger-in letters of "OMIEO" from below
+            gsapModule.fromTo(
+                ".hero-letter",
+                { y: 80, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    stagger: 0.06,
+                    ease: "power3.out",
+                    delay: 1.6, // after page loader
+                }
+            );
+
+            // Hero section children stagger reveal
+            gsapModule.fromTo(
+                ".hero-stagger-child",
+                { y: 30, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.7,
+                    stagger: 0.12,
+                    ease: "power2.out",
+                    delay: 2.0,
+                }
+            );
+        };
+
+        initGSAP();
+
+        return () => {
+            if (scrollTriggerModule) {
+                scrollTriggerModule.getAll().forEach((t: any) => t.kill());
+            }
+        };
+    }, [mounted]);
 
     const scrollToSection = (id: string) => {
         const el = document.getElementById(id);
@@ -114,27 +168,29 @@ export default function Hero() {
     return (
         <section id="hero" className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden px-6 section-spacing transition-colors duration-1000">
 
+            {/* Particle Field Background */}
+            <ParticleBackground />
+
+            {/* Animated Gradient Mesh */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="hero-mesh hero-mesh-1" />
+                <div className="hero-mesh hero-mesh-2" />
+                <div className="hero-mesh hero-mesh-3" />
+            </div>
+
             <div className="relative z-10 max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
                 {/* Left: Typography & Content */}
                 <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="space-y-4"
-                    >
-                        <div className="flex flex-wrap items-center gap-3 mb-6">
+                    <div className="space-y-4">
+                        <div className="flex flex-wrap items-center gap-3 mb-6 hero-stagger-child" style={{ opacity: 0 }}>
                             {/* SYSTEM ONLINE Badge */}
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.3 }}
+                            <div
                                 className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass-pill text-xs font-mono tracking-widest uppercase"
                             >
                                 <span className="online-dot" />
                                 <span className="text-emerald-400 font-bold">SYSTEM ONLINE</span>
-                            </motion.div>
+                            </div>
 
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--text-primary)]/[0.03] backdrop-blur-3xl text-[10px] sm:text-xs font-bold tracking-widest uppercase text-[var(--text-secondary)]">
                                 Freelance Web Developer
@@ -142,26 +198,21 @@ export default function Hero() {
                         </div>
 
                         <h1 
+                            ref={headlineRef}
                             aria-label="Omieo Zaman"
-                            className="text-6xl md:text-[96px] lg:text-[140px] font-bold tracking-tighter text-[var(--text-primary)] leading-[0.85] transition-colors duration-1000 flex"
+                            className="text-6xl md:text-[96px] lg:text-[140px] font-bold tracking-tighter text-[var(--text-primary)] leading-[0.85] transition-colors duration-1000 flex overflow-hidden"
                         >
                             {"OMIEO".split("").map((char, index) => (
-                                <motion.span
+                                <span
                                     key={index}
                                     aria-hidden="true"
-                                    initial={{ opacity: 0, y: 40 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.6, delay: index * 0.03, ease: "easeOut" }}
-                                    className="inline-block"
+                                    className="hero-letter inline-block"
+                                    style={{ opacity: 0 }}
                                 >
                                     {char}
-                                </motion.span>
+                                </span>
                             ))}
-                            <motion.span
-                                initial={{ opacity: 0, y: 40 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: 5 * 0.03, ease: "easeOut" }}
-                            >
+                            <span className="hero-letter inline-block" style={{ opacity: 0 }}>
                                 <motion.span
                                     animate={{ scale: [1, 1.5, 1], opacity: [1, 0.8, 1] }}
                                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -169,24 +220,22 @@ export default function Hero() {
                                 >
                                     .
                                 </motion.span>
-                            </motion.span>
+                            </span>
                         </h1>
 
                         {/* Typewriter Subtitle */}
-                        <div className="h-8 flex items-center">
+                        <div className="h-8 flex items-center hero-stagger-child" style={{ opacity: 0 }}>
                             <span className="text-base md:text-lg font-mono text-[var(--text-secondary)] tracking-wide">
                                 {subtitle}
                             </span>
                             <span className="typewriter-cursor" />
                         </div>
 
-                    </motion.div>
+                    </div>
 
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-lg"
+                    <div
+                        className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-lg hero-stagger-child"
+                        style={{ opacity: 0 }}
                     >
                         <div className="group glass-pill p-4 md:p-6 hover:bg-[var(--glass-highlight)] transition-all duration-300 cursor-default flex items-center gap-4">
                             <div className="p-3 rounded-full bg-[var(--text-primary)]/5 text-[var(--text-primary)] shrink-0">
@@ -207,18 +256,16 @@ export default function Hero() {
                                 <p className="text-xs text-[var(--text-secondary)] mt-0.5">Architect of Shadow Realm</p>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
 
-                    <div className="text-sm font-medium text-[var(--text-secondary)] pt-4">
+                    <div className="text-sm font-medium text-[var(--text-secondary)] pt-4 hero-stagger-child" style={{ opacity: 0 }}>
                         Want a site that actually works? ↓
                     </div>
 
                     {/* CTA Buttons with Magnetic Effect */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.8 }}
-                        className="flex flex-col sm:flex-row items-center gap-4 pt-2"
+                    <div
+                        className="flex flex-col sm:flex-row items-center gap-4 pt-2 hero-stagger-child"
+                        style={{ opacity: 0 }}
                     >
                         <MagneticButton
                             onClick={() => scrollToSection('projects')}
@@ -234,7 +281,7 @@ export default function Hero() {
                         >
                             Start Quest
                         </MagneticButton>
-                    </motion.div>
+                    </div>
                 </div>
 
                 {/* Right: Interactive 3D Card */}

@@ -1,8 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { ExternalLink, Monitor, Globe, PenTool, Gamepad2, Calculator, ShoppingCart, Rocket } from "lucide-react";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import MysticQuote from "@/components/MysticQuote";
 
@@ -94,29 +93,64 @@ const projects = [
 ];
 
 export default function Projects() {
+    const sectionRef = useRef<HTMLElement>(null);
+
+    // GSAP ScrollTrigger for staggered card entry
+    useEffect(() => {
+        let ctx: any;
+
+        const initGSAP = async () => {
+            const gsap = (await import("gsap")).default;
+            const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+            gsap.registerPlugin(ScrollTrigger);
+
+            ctx = gsap.context(() => {
+                gsap.fromTo(
+                    ".project-card",
+                    { y: 60, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.7,
+                        stagger: 0.12,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: sectionRef.current,
+                            start: "top 60%",
+                            toggleActions: "play none none none",
+                        },
+                    }
+                );
+            }, sectionRef);
+        };
+
+        initGSAP();
+
+        return () => {
+            if (ctx) ctx.revert();
+        };
+    }, []);
+
     return (
-        <section id="projects" className="relative w-full section-spacing px-6 flex flex-col items-center overflow-hidden">
+        <section id="projects" ref={sectionRef} className="relative w-full section-spacing px-6 flex flex-col items-center overflow-hidden">
 
             <div className="relative z-10 max-w-6xl w-full">
 
                 {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false, amount: 0.2 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-center mb-16"
-                >
+                <div className="relative text-center mb-16">
+                    {/* Oversized Section Number */}
+                    <span className="section-number">03</span>
+
                     <span className="inline-block py-1 px-3 rounded-full bg-[var(--glass-surface)] border border-[var(--glass-border)] text-xs text-[var(--text-secondary)] font-mono tracking-widest uppercase mb-4">
                         Quest Log
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal">
+                    <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal font-display">
                         Selected <span className="inline-block text-[var(--text-secondary)] pr-3 pb-1 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--text-tertiary)]">Missions.</span>
                     </h2>
                     <div className="mt-8">
                         <MysticQuote text="Reality is programmable." author="The Architect" />
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Bento Grid */}
                 <div className="bento-grid">
@@ -180,16 +214,13 @@ function BentoCard({ project, index }: { project: typeof projects[0]; index: num
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-            className={clsx(project.isHero && "bento-hero")}
+        <div
+            className={clsx("project-card", project.isHero && "bento-hero")}
+            style={{ opacity: 0 }}
         >
             <div
                 ref={cardRef}
-                className="card-3d group relative w-full h-full rounded-[20px] overflow-hidden"
+                className="card-3d project-glass-hover group relative w-full h-full rounded-[20px] overflow-hidden"
                 style={{
                     backdropFilter: "blur(16px)",
                     background: "rgba(255, 255, 255, 0.05)",
@@ -216,10 +247,10 @@ function BentoCard({ project, index }: { project: typeof projects[0]; index: num
                         </div>
                     </div>
 
-                    {/* Video */}
+                    {/* Video with clip-path reveal */}
                     <div className={clsx(
-                        "absolute inset-0 flex items-center justify-center bg-black transition-opacity duration-300",
-                        isPlaying ? "opacity-100" : "opacity-0"
+                        "absolute inset-0 flex items-center justify-center bg-black clip-reveal-media",
+                        isPlaying ? "!clip-path-[circle(75%_at_50%_50%)]" : ""
                     )}>
                         <video
                             ref={videoRef}
@@ -279,6 +310,6 @@ function BentoCard({ project, index }: { project: typeof projects[0]; index: num
                     </a>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 }

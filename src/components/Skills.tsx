@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
     Globe, Code2, Terminal, Layout, PenTool, ShoppingCart
 } from "lucide-react";
@@ -112,49 +111,98 @@ export default function Skills() {
         return () => observer.disconnect();
     }, []);
 
+    // GSAP ScrollTrigger for staggered card entry and skill bar animations
+    useEffect(() => {
+        let ctx: any;
+
+        const initGSAP = async () => {
+            const gsap = (await import("gsap")).default;
+            const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+            gsap.registerPlugin(ScrollTrigger);
+
+            ctx = gsap.context(() => {
+                // Stagger skill cards
+                gsap.fromTo(
+                    ".skill-card",
+                    { y: 50, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.6,
+                        stagger: 0.1,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: sectionRef.current,
+                            start: "top 65%",
+                            toggleActions: "play none none none",
+                        },
+                    }
+                );
+
+                // Animate skill bars from 0% width
+                gsap.fromTo(
+                    ".gsap-skill-bar",
+                    { width: "0%" },
+                    {
+                        width: (i: number, el: HTMLElement) => el.dataset.width || "0%",
+                        duration: 1.4,
+                        stagger: 0.1,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: sectionRef.current,
+                            start: "top 60%",
+                            toggleActions: "play none none none",
+                        },
+                    }
+                );
+            }, sectionRef);
+        };
+
+        initGSAP();
+
+        return () => {
+            if (ctx) ctx.revert();
+        };
+    }, []);
+
     return (
         <section id="skills" ref={sectionRef} className="relative w-full section-spacing px-6 flex flex-col items-center overflow-hidden">
             <div className="relative z-10 max-w-6xl w-full">
 
                 {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-center mb-20"
-                >
+                <div className="relative text-center mb-20">
+                    {/* Oversized Section Number */}
+                    <span className="section-number">02</span>
+
                     <span className="inline-block py-1 px-3 rounded-full glass-pill text-xs text-[var(--text-secondary)] font-mono tracking-widest uppercase mb-4">
                         The Inventory
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal">
+                    <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal font-display">
                         Skill <span className="inline-block text-[var(--text-secondary)] pr-3 pb-1 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--text-tertiary)]">Matrix.</span>
                     </h2>
-                </motion.div>
+                </div>
 
                 {/* Skills Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {skills.map((skill, idx) => (
-                        <motion.div
+                        <div
                             key={idx}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.2 }}
-                            transition={{ delay: idx * 0.08, duration: 0.5 }}
-                            whileHover={{ scale: 1.02, y: -4 }}
-                            className="liquid-glass group relative p-6 cursor-default scanline-hover overflow-hidden"
+                            className="skill-card liquid-glass group relative p-6 cursor-default scanline-hover overflow-hidden"
                             style={{
+                                opacity: 0,
                                 transition: "box-shadow 0.3s ease, border-color 0.3s ease, transform 0.3s ease, background 0.3s ease",
                             }}
                             onMouseEnter={(e) => {
                                 const el = e.currentTarget as HTMLElement;
                                 el.style.borderColor = `rgba(${skill.glow}, 0.3)`;
                                 el.style.boxShadow = `0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), 0 0 20px rgba(${skill.glow}, 0.1)`;
+                                el.style.transform = "translateY(-4px) scale(1.02)";
                             }}
                             onMouseLeave={(e) => {
                                 const el = e.currentTarget as HTMLElement;
                                 el.style.borderColor = "rgba(255, 255, 255, 0.10)";
                                 el.style.boxShadow = "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)";
+                                el.style.transform = "translateY(0) scale(1)";
                             }}
                         >
                             <div className="flex items-start gap-4 mb-4">
@@ -175,12 +223,13 @@ export default function Skills() {
                                 </div>
                             </div>
 
-                            {/* Animated Level Bar */}
+                            {/* Animated Level Bar - GSAP driven */}
                             <div className="w-full h-1.5 rounded-full bg-[var(--text-primary)]/5 mb-4 overflow-hidden">
                                 <div
-                                    className={clsx("h-full rounded-full transition-all duration-[1200ms] ease-out", skill.barColor)}
+                                    className={clsx("gsap-skill-bar h-full rounded-full", skill.barColor)}
+                                    data-width={`${skill.level}%`}
                                     style={{
-                                        width: inView ? `${skill.level}%` : "0%",
+                                        width: "0%",
                                         boxShadow: `0 0 8px rgba(${skill.glow}, 0.4)`,
                                     }}
                                 />
@@ -190,7 +239,7 @@ export default function Skills() {
                             <p className="text-sm text-[var(--text-secondary)] leading-relaxed group-hover:text-[var(--text-primary)] transition-colors">
                                 {skill.desc}
                             </p>
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             </div>

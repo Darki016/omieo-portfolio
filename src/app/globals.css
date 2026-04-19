@@ -3,6 +3,7 @@
 @theme {
   --font-outfit: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Cormorant Garamond', serif;
 }
 
 :root {
@@ -643,4 +644,174 @@ body {
 
 .copy-flash {
   animation: copyFlash 0.3s ease;
+}
+
+/* ==================== */
+/* MARQUEE TICKER       */
+/* ==================== */
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-ticker-track {
+  animation: marqueeScroll 30s linear infinite;
+}
+
+.marquee-ticker-wrap:hover .marquee-ticker-track {
+  animation-play-state: paused;
+}
+
+/* ==================== */
+/* SECTION NUMBERS      */
+/* ==================== */
+.section-number {
+  font-family: var(--font-display);
+  font-size: clamp(80px, 12vw, 160px);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--text-primary);
+  opacity: 0.04;
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.05em;
+}
+
+/* ==================== */
+/* SECTION DISPLAY FONT */
+/* ==================== */
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* ==================== */
+/* PROJECT CLIP REVEAL  */
+/* ==================== */
+.clip-reveal-media {
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card-3d:hover .clip-reveal-media {
+  clip-path: circle(75% at 50% 50%);
+}
+
+/* Project card glassmorphism on hover */
+.project-glass-hover {
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.project-glass-hover:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(40px) saturate(200%) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ==================== */
+/* SUBMIT PULSE         */
+/* ==================== */
+@keyframes submitPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-color), 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(var(--accent-color), 0); }
+}
+
+.submit-pulse {
+  animation: submitPulse 2.5s ease-in-out infinite;
+}
+
+/* ==================== */
+/* GRADIENT MESH HERO   */
+/* ==================== */
+@keyframes meshFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -20px) scale(1.1); }
+}
+
+@keyframes meshFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-20px, 30px) scale(0.9); }
+}
+
+@keyframes meshFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1.05); }
+  50% { transform: translate(15px, 15px) scale(0.95); }
+}
+
+.hero-mesh {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.hero-mesh-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(15, 23, 42, 0.8) 0%, transparent 70%);
+  top: -10%;
+  left: -5%;
+  animation: meshFloat1 10s ease-in-out infinite;
+}
+
+.hero-mesh-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(88, 28, 135, 0.25) 0%, transparent 70%);
+  top: 20%;
+  right: 10%;
+  animation: meshFloat2 14s ease-in-out infinite;
+}
+
+.hero-mesh-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(30, 27, 75, 0.35) 0%, transparent 70%);
+  bottom: 10%;
+  left: 30%;
+  animation: meshFloat3 12s ease-in-out infinite;
+}
+
+/* ==================== */
+/* PAGE WIPE ENTRANCE   */
+/* ==================== */
+@keyframes wipeReveal {
+  0% { transform: scaleY(1); }
+  100% { transform: scaleY(0); }
+}
+
+.page-wipe {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-deep);
+  z-index: 99998;
+  transform-origin: top center;
+  animation: wipeReveal 0.8s cubic-bezier(0.76, 0, 0.24, 1) 1.5s forwards;
+  pointer-events: none;
+}
+
+/* ==================== */
+/* LENIS OVERRIDES      */
+/* ==================== */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }

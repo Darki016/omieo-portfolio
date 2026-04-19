@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, JetBrains_Mono } from "next/font/google";
+import { Outfit, JetBrains_Mono, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import AmbientBackground from "@/components/AmbientBackground";
@@ -8,6 +8,8 @@ import CursorGlow from "@/components/CursorGlow";
 import PageLoader from "@/components/PageLoader";
 import DotNav from "@/components/DotNav";
 import SchemaMarkup from "@/components/SchemaMarkup";
+import SmoothScroller from "@/components/SmoothScroller";
+import GrainOverlay from "@/components/GrainOverlay";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -17,6 +19,12 @@ const outfit = Outfit({
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
+});
+
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -87,7 +95,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
       <body
-        className={`${outfit.variable} ${jetbrainsMono.variable} antialiased text-foreground`}
+        className={`${outfit.variable} ${jetbrainsMono.variable} ${cormorantGaramond.variable} antialiased text-foreground`}
         suppressHydrationWarning
       >
         <SpeedInsights />
@@ -95,6 +103,10 @@ export default function RootLayout({
         <ThemeProvider>
           <SchemaMarkup />
           <PageLoader />
+          {/* Page wipe reveal after loader */}
+          <div className="page-wipe" />
+          <SmoothScroller />
+          <GrainOverlay />
           <AmbientBackground />
           <DotNav />
           <Navbar />

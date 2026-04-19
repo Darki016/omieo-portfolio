@@ -3,7 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import { Mail, Facebook, Instagram, Linkedin, MessageCircle, Gamepad2, Copy, Check } from "lucide-react";
 import clsx from "clsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import LiquidOrb from "@/components/LiquidOrb";
 
 // Correct Fiverr SVG Icon
@@ -94,14 +94,50 @@ const socialLinks = [
     },
 ];
 
-const socialVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } }
-};
+// Magnetic button for the submit
+function MagneticSubmit({ children, className, onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) {
+    const btnRef = useRef<HTMLButtonElement>(null);
+
+    const handleMouseMove = useCallback((e: React.MouseEvent) => {
+        if (!btnRef.current) return;
+        const rect = btnRef.current.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const distX = e.clientX - centerX;
+        const distY = e.clientY - centerY;
+        const dist = Math.sqrt(distX * distX + distY * distY);
+
+        if (dist < 100) {
+            const pullStrength = 0.2;
+            btnRef.current.style.transform = `translate(${distX * pullStrength}px, ${distY * pullStrength}px)`;
+        }
+    }, []);
+
+    const handleMouseLeave = useCallback(() => {
+        if (btnRef.current) {
+            btnRef.current.style.transform = "translate(0, 0)";
+        }
+    }, []);
+
+    return (
+        <button
+            ref={btnRef}
+            type="button"
+            onClick={onClick}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className={className}
+            style={{ transition: "transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)" }}
+        >
+            {children}
+        </button>
+    );
+}
 
 export default function Contact() {
     const [message, setMessage] = useState("");
     const [copied, setCopied] = useState(false);
+    const sectionRef = useRef<HTMLElement>(null);
 
     // Listen for "prefill-contact" event from Services
     useEffect(() => {
@@ -114,6 +150,62 @@ export default function Contact() {
         window.addEventListener("prefill-contact" as any, handlePrefill as any);
         return () => {
             window.removeEventListener("prefill-contact" as any, handlePrefill as any);
+        };
+    }, []);
+
+    // GSAP ScrollTrigger for staggered form field entry
+    useEffect(() => {
+        let ctx: any;
+
+        const initGSAP = async () => {
+            const gsap = (await import("gsap")).default;
+            const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+            gsap.registerPlugin(ScrollTrigger);
+
+            ctx = gsap.context(() => {
+                // Stagger form fields on scroll entry
+                gsap.fromTo(
+                    ".contact-field",
+                    { y: 30, opacity: 0 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.5,
+                        stagger: 0.08,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: ".contact-form-wrap",
+                            start: "top 70%",
+                            toggleActions: "play none none none",
+                        },
+                    }
+                );
+
+                // Social links stagger
+                gsap.fromTo(
+                    ".social-link-card",
+                    { y: 30, opacity: 0, scale: 0.9 },
+                    {
+                        y: 0,
+                        opacity: 1,
+                        scale: 1,
+                        duration: 0.5,
+                        stagger: 0.06,
+                        ease: "back.out(1.2)",
+                        scrollTrigger: {
+                            trigger: ".social-grid",
+                            start: "top 80%",
+                            toggleActions: "play none none none",
+                        },
+                    }
+                );
+            }, sectionRef);
+        };
+
+        initGSAP();
+
+        return () => {
+            if (ctx) ctx.revert();
         };
     }, []);
 
@@ -136,18 +228,16 @@ export default function Contact() {
     };
 
     return (
-        <section id="contact" className="relative w-full section-spacing px-4 md:px-6 flex flex-col items-center overflow-hidden">
+        <section id="contact" ref={sectionRef} className="relative w-full section-spacing px-4 md:px-6 flex flex-col items-center overflow-hidden">
 
             <div className="relative z-10 max-w-7xl w-full">
 
                 {/* Big Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    className="text-center mb-16"
-                >
-                    <h2 className="relative z-10 text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal">
+                <div className="relative text-center mb-16">
+                    {/* Oversized Section Number */}
+                    <span className="section-number">07</span>
+
+                    <h2 className="relative z-10 text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal font-display">
                         The Shadow <span className="inline-block text-[var(--text-secondary)] pr-3 pb-1 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r from-[var(--text-primary)] via-[var(--text-secondary)] to-[var(--text-tertiary)]">Exchange.</span>
                     </h2>
                     <p className="text-[var(--text-secondary)] mt-4 text-lg">Connect with me.</p>
@@ -173,45 +263,39 @@ export default function Contact() {
                             <span className="text-xs text-emerald-400 font-mono">Copied!</span>
                         )}
                     </div>
-                </motion.div>
+                </div>
 
                 {/* Main Content: Form + Orb */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                    className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-24 will-change-transform"
-                >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-24 will-change-transform">
 
                     {/* Left: Contact Form */}
-                    <div className="liquid-glass p-6 md:p-8 flex flex-col justify-center">
-                        <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-8 transition-colors">Send a message</h3>
+                    <div className="contact-form-wrap liquid-glass p-6 md:p-8 flex flex-col justify-center">
+                        <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-8 transition-colors contact-field" style={{ opacity: 0 }}>Send a message</h3>
 
                         <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
+                                <div className="space-y-2 contact-field" style={{ opacity: 0 }}>
                                     <label className="text-xs text-[var(--text-secondary)] font-mono uppercase tracking-wider">First name *</label>
                                     <input required id="firstName" name="firstName" type="text" placeholder="First name" className="w-full bg-[var(--bg-deep)] border border-[var(--glass-border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--glass-highlight)] transition-colors placeholder:text-[var(--text-tertiary)]" />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="space-y-2 contact-field" style={{ opacity: 0 }}>
                                     <label className="text-xs text-[var(--text-secondary)] font-mono uppercase tracking-wider">Last name</label>
                                     <input id="lastName" name="lastName" type="text" placeholder="Last name" className="w-full bg-[var(--bg-deep)] border border-[var(--glass-border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--glass-highlight)] transition-colors placeholder:text-[var(--text-tertiary)]" />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
+                                <div className="space-y-2 contact-field" style={{ opacity: 0 }}>
                                     <label className="text-xs text-[var(--text-secondary)] font-mono uppercase tracking-wider">Email *</label>
                                     <input required id="email" name="email" type="email" placeholder="Email" className="w-full bg-[var(--bg-deep)] border border-[var(--glass-border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--glass-highlight)] transition-colors placeholder:text-[var(--text-tertiary)]" />
                                 </div>
-                                <div className="space-y-2">
+                                <div className="space-y-2 contact-field" style={{ opacity: 0 }}>
                                     <label className="text-xs text-[var(--text-secondary)] font-mono uppercase tracking-wider">Phone</label>
                                     <input id="phone" name="phone" type="tel" placeholder="Phone" className="w-full bg-[var(--bg-deep)] border border-[var(--glass-border)] rounded-lg px-4 py-3 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--glass-highlight)] transition-colors placeholder:text-[var(--text-tertiary)]" />
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-2 contact-field" style={{ opacity: 0 }}>
                                 <label className="text-xs text-[var(--text-secondary)] font-mono uppercase tracking-wider">How can I help?</label>
                                 <textarea
                                     id="message"
@@ -224,24 +308,25 @@ export default function Contact() {
                                 />
                             </div>
 
-                            <button
-                                onClick={() => {
-                                    const fname = (document.getElementById('firstName') as HTMLInputElement).value;
-                                    const lname = (document.getElementById('lastName') as HTMLInputElement).value;
-                                    const emailVal = (document.getElementById('email') as HTMLInputElement).value;
-                                    const phone = (document.getElementById('phone') as HTMLInputElement).value;
-                                    const msg = message;
+                            <div className="contact-field" style={{ opacity: 0 }}>
+                                <MagneticSubmit
+                                    onClick={() => {
+                                        const fname = (document.getElementById('firstName') as HTMLInputElement).value;
+                                        const lname = (document.getElementById('lastName') as HTMLInputElement).value;
+                                        const emailVal = (document.getElementById('email') as HTMLInputElement).value;
+                                        const phone = (document.getElementById('phone') as HTMLInputElement).value;
+                                        const msg = message;
 
-                                    const subject = `Contact from ${fname} ${lname}`;
-                                    const body = `Name: ${fname} ${lname}\nEmail: ${emailVal}\nPhone: ${phone}\n\nMessage:\n${msg}`;
+                                        const subject = `Contact from ${fname} ${lname}`;
+                                        const body = `Name: ${fname} ${lname}\nEmail: ${emailVal}\nPhone: ${phone}\n\nMessage:\n${msg}`;
 
-                                    window.open(`mailto:abidomieo@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
-                                }}
-                                type="button"
-                                className="w-full py-4 rounded-full bg-[var(--text-primary)] text-[var(--bg-deep)] font-bold text-sm tracking-wide hover:opacity-90 transition-opacity mt-4"
-                            >
-                                Submit
-                            </button>
+                                        window.open(`mailto:abidomieo@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+                                    }}
+                                    className="w-full py-4 rounded-full bg-[var(--text-primary)] text-[var(--bg-deep)] font-bold text-sm tracking-wide hover:opacity-90 transition-opacity mt-4 submit-pulse"
+                                >
+                                    Submit
+                                </MagneticSubmit>
+                            </div>
                         </form>
 
                         {/* Muted text below form */}
@@ -255,25 +340,21 @@ export default function Contact() {
                         <LiquidOrb />
                     </div>
 
-                </motion.div>
+                </div>
 
                 {/* Social Grid */}
-                <div className="flex flex-wrap justify-center gap-4">
+                <div className="social-grid flex flex-wrap justify-center gap-4">
                     {socialLinks.map((link, idx) => (
-                        <motion.a
+                        <a
                             key={idx}
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            variants={socialVariants}
-                            initial="hidden"
-                            whileInView="show"
-                            viewport={{ once: true }}
-                            whileHover={{ y: -8, scale: 1.05, transition: { duration: 0.2 } }}
                             className={clsx(
-                                "liquid-glass group p-4 flex flex-col items-center justify-center gap-3 cursor-pointer",
+                                "social-link-card liquid-glass group p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:-translate-y-2 hover:scale-105 transition-all duration-300",
                                 "w-[45%] md:w-auto md:flex-1 md:min-w-[120px]",
                             )}
+                            style={{ opacity: 0 }}
                         >
                             <div className={clsx("p-3 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 bg-[var(--text-primary)]/5", link.color)}>
                                 {link.icon}
@@ -282,7 +363,7 @@ export default function Contact() {
                                 <span className="block text-sm font-bold text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{link.name}</span>
                                 <span className="block text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider font-mono mt-1 group-hover:text-[var(--text-secondary)] transition-colors">{link.desc}</span>
                             </div>
-                        </motion.a>
+                        </a>
                     ))}
                 </div>
 

@@ -21,6 +21,27 @@ export default function CursorGlow() {
         const handleMouseMove = (e: MouseEvent) => {
             targetX = e.clientX;
             targetY = e.clientY;
+
+            // Magnetic pull effect on CTA buttons and social links
+            const magneticEls = document.querySelectorAll('[data-magnetic], .social-link-card, .submit-pulse');
+            magneticEls.forEach((el) => {
+                const rect = (el as HTMLElement).getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const distX = e.clientX - centerX;
+                const distY = e.clientY - centerY;
+                const dist = Math.sqrt(distX * distX + distY * distY);
+
+                if (dist < 100) {
+                    const pullStrength = 0.15;
+                    const pullX = distX * pullStrength;
+                    const pullY = distY * pullStrength;
+                    (el as HTMLElement).style.transform = `translate(${pullX}px, ${pullY}px)`;
+                    (el as HTMLElement).style.transition = "transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)";
+                } else {
+                    (el as HTMLElement).style.transform = "";
+                }
+            });
         };
 
         const handleMouseOver = (e: MouseEvent) => {
@@ -30,8 +51,8 @@ export default function CursorGlow() {
         };
 
         const animate = () => {
-            // Dot follows immediately
-            const dotEase = 0.2;
+            // Dot follows with slight smoothing
+            const dotEase = 0.25;
             dotX += (targetX - dotX) * dotEase;
             dotY += (targetY - dotY) * dotEase;
 
@@ -67,31 +88,34 @@ export default function CursorGlow() {
 
     return (
         <>
-            {/* Inner Dot */}
+            {/* Inner Dot — Glowing accent dot */}
             <div
                 ref={dotRef}
                 className="pointer-events-none fixed z-[9999]"
                 style={{
-                    width: isHovering ? 8 : 6,
-                    height: isHovering ? 8 : 6,
+                    width: isHovering ? 12 : 8,
+                    height: isHovering ? 12 : 8,
                     borderRadius: "50%",
                     background: "var(--cursor-color)",
+                    boxShadow: isHovering
+                        ? "0 0 20px 6px var(--cursor-color), 0 0 40px 12px rgba(var(--accent-color), 0.2)"
+                        : "0 0 12px 4px var(--cursor-color), 0 0 24px 8px rgba(var(--accent-color), 0.15)",
                     transform: "translate(-50%, -50%)",
-                    transition: "width 0.2s, height 0.2s",
+                    transition: "width 0.25s cubic-bezier(0.25,0.8,0.25,1), height 0.25s cubic-bezier(0.25,0.8,0.25,1), box-shadow 0.25s ease",
                 }}
             />
-            {/* Outer Ring */}
+            {/* Outer Ring — scales 1.8x on interactive hover */}
             <div
                 ref={ringRef}
                 className="pointer-events-none fixed z-[9998]"
                 style={{
-                    width: isHovering ? 48 : 32,
-                    height: isHovering ? 48 : 32,
+                    width: isHovering ? 58 : 32, // 32 * 1.8 ≈ 58
+                    height: isHovering ? 58 : 32,
                     borderRadius: "50%",
                     border: `1.5px solid var(--cursor-ring)`,
                     background: isHovering ? "rgba(var(--accent-color), 0.06)" : "transparent",
                     transform: "translate(-50%, -50%)",
-                    transition: "width 0.3s cubic-bezier(0.25,0.8,0.25,1), height 0.3s cubic-bezier(0.25,0.8,0.25,1), background 0.3s",
+                    transition: "width 0.3s cubic-bezier(0.25,0.8,0.25,1), height 0.3s cubic-bezier(0.25,0.8,0.25,1), background 0.3s, border-color 0.3s",
                     mixBlendMode: "difference",
                 }}
             />
