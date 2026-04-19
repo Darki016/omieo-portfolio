@@ -7,14 +7,16 @@ export default function SchemaMarkup() {
     "name": "Omieo Zaman",
     "url": "https://omieo-portfolio.vercel.app",
     "image": "https://omieo-portfolio.vercel.app/profile.webp",
-    "jobTitle": "Full-Stack Web Developer & Medical Student",
+    "jobTitle": "WordPress & WooCommerce Developer",
     "description": "Premium WordPress & WooCommerce Developer specializing in high-performance e-commerce sites for clients in Bangladesh and worldwide.",
     "sameAs": [
       "https://www.facebook.com/omieozaman",
       "https://www.instagram.com/omieozaman/",
       "https://www.linkedin.com/in/abid-zaman-1a9709288/",
       "https://www.fiverr.com/omieozaman",
-      "https://www.upwork.com/freelancers/~01d0019fdd7a74382b"
+      "https://www.upwork.com/freelancers/~01d0019fdd7a74382b",
+      "https://wa.me/+8801572909866",
+      "https://discordapp.com/users/866313775144370217"
     ],
     "knowsAbout": [
       "Web Development",
