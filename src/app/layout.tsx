@@ -71,6 +71,9 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  verification: {
+    google: "66oUx5mRarw6fKdQ5P7G9fVPbinbAAXHoqNoALBVuQ4",
+  },
 };
 
 import { SpeedInsights } from "@vercel/speed-insights/next"
