@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
+import clsx from "clsx";
 
 export default function ThemeToggle({ className }: { className?: string }) {
     const { theme, toggleTheme } = useTheme();
@@ -10,7 +11,11 @@ export default function ThemeToggle({ className }: { className?: string }) {
     return (
         <div
             onClick={toggleTheme}
-            className={`w-14 h-7 rounded-full p-1 cursor-pointer flex items-center transition-colors duration-500 shadow-sm border border-white/10 ${theme === 'dark' ? 'bg-black justify-end' : 'bg-gray-200 justify-start'} ${className}`}
+            className={clsx(
+                "w-14 h-7 rounded-full p-1 cursor-pointer flex items-center shadow-sm border border-[var(--glass-border)] transition-colors duration-400 ease-in-out",
+                theme === 'dark' ? 'bg-black justify-end' : 'bg-rose-100 justify-start',
+                className
+            )}
         >
             <motion.div
                 layout
@@ -24,7 +29,7 @@ export default function ThemeToggle({ className }: { className?: string }) {
                             initial={{ y: -20, opacity: 0, rotate: -45 }}
                             animate={{ y: 0, opacity: 1, rotate: 0 }}
                             exit={{ y: 20, opacity: 0, rotate: 45 }}
-                            transition={{ duration: 0.2 }}
+                            transition={{ duration: 0.4 }}
                         >
                             <Moon className="w-3 h-3 text-slate-800 fill-slate-800" />
                         </motion.div>
@@ -34,9 +39,9 @@ export default function ThemeToggle({ className }: { className?: string }) {
                             initial={{ y: 20, opacity: 0, rotate: 45 }}
                             animate={{ y: 0, opacity: 1, rotate: 0 }}
                             exit={{ y: -20, opacity: 0, rotate: -45 }}
-                            transition={{ duration: 0.2 }}
+                            transition={{ duration: 0.4 }}
                         >
-                            <Sun className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                            <Sun className="w-3 h-3 text-rose-500 fill-rose-500" />
                         </motion.div>
                     )}
                 </AnimatePresence>

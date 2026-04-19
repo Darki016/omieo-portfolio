@@ -1,97 +1,64 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
-import { Code, PenTool, Users, Zap, BookOpen, Layers } from "lucide-react";
 import clsx from "clsx";
 
-const webDevServices = [
+const pricingCards = [
     {
-        title: "Webflow & Framer",
-        subtitle: "HIGH_IMPACT",
-        price: "$600 – $1,600",
-        desc: "For projects that need a real wow factor. Smooth animations, modern layouts, and a premium feel—best suited for landing pages and portfolios.",
-        features: ["Smooth Animations", "Modern Layouts", "Premium Feel", "Fast Turnaround"],
-        color: "text-rose-400",
-        bg: "bg-rose-500",
-        shadow: "shadow-rose-500/20",
-        icon: <Zap className="w-6 h-6" />,
-        glow: "251, 113, 133", // Rose
-        template: "[Service Request: High-Impact Site (Webflow/Framer)]\n\nI need a premium site with smooth animations. Project Details: "
-    },
-    {
-        title: "WordPress Builds",
-        subtitle: "SCALABLE_CMS",
-        price: "$500 – $1,500",
-        desc: "Scalable, SEO-ready websites with a CMS that’s actually usable. Ideal for businesses that want flexibility without chaos.",
-        features: ["SEO Ready", "User Design", "Flexible CMS", "Easy Management"],
+        title: "Starter Build",
+        price: "$75 – $150",
+        desc: "WordPress site, up to 5 pages, free theme, contact form. Good for small businesses that need to exist online.",
+        delivery: "5–7 days",
         color: "text-sky-400",
-        bg: "bg-sky-500",
-        shadow: "shadow-sky-500/20",
-        icon: <Layers className="w-6 h-6" />,
-        glow: "56, 189, 248", // Sky
-        template: "[Service Request: Scalable CMS (WordPress)]\n\nI need an SEO-ready website that is easy to manage. Requirements: "
+        glow: "56, 189, 248",
+        template: "[Service Request: Starter Build]\n\nI need a basic WordPress site. Details: ",
     },
     {
-        title: "Custom Code Builds",
-        subtitle: "HARD_CODED",
-        price: "$400 – $800",
-        desc: "Handcrafted sites built from scratch using HTML, CSS, and JavaScript. Ultra-fast, lean, and bloat-free. Best for static sites or custom logic.",
-        features: ["Ultra Fast", "Lean Code", "No Bloat", "Custom Logic"],
+        title: "Business Site",
+        price: "$150 – $300",
+        desc: "Custom design with Elementor, up to 10 pages, basic SEO setup, mobile-responsive.",
+        delivery: "7–14 days",
         color: "text-violet-400",
-        bg: "bg-violet-500",
-        shadow: "shadow-violet-500/20",
-        icon: <Code className="w-6 h-6" />,
-        glow: "167, 139, 250", // Violet
-        template: "[Service Request: Custom Development (HTML/CSS/JS)]\n\nI need a high-performance, handcrafted website. Specifications: "
-    }
-];
-
-const creativeServices = [
+        glow: "167, 139, 250",
+        template: "[Service Request: Business Site]\n\nI need a custom WordPress site with Elementor. Details: ",
+    },
+    {
+        title: "WooCommerce Store",
+        price: "$250 – $500",
+        desc: "Full e-commerce setup — product pages, payment gateway, shipping config, up to 20 products listed.",
+        delivery: "10–21 days",
+        color: "text-emerald-400",
+        glow: "52, 211, 153",
+        template: "[Service Request: WooCommerce Store]\n\nI need a full e-commerce store setup. Details: ",
+    },
+    {
+        title: "Bug Fix / Customization",
+        price: "$15 – $60",
+        desc: "Broken layouts, plugin conflicts, responsive issues, minor feature additions.",
+        delivery: "1–3 days",
+        color: "text-amber-400",
+        glow: "251, 191, 36",
+        template: "[Service Request: Bug Fix / Customization]\n\nI need help fixing or customizing my site. Issue: ",
+    },
     {
         title: "Pro Content & Copy",
-        subtitle: "SPECIALIZED_WRITING",
-        desc: "Medical, technical, or web-focused content that’s clear, accurate, and logically structured. Backed by medical training and award-recognized English skills.",
-        rates: [
-            "Writing: $0.15 – $0.25 / word",
-            "Proofreading: $0.05 – $0.07 / word",
-            "Web Copy Pkg: $300 – $600"
-        ],
-        color: "text-amber-400",
-        bg: "bg-amber-500",
-        shadow: "shadow-amber-500/20",
-        icon: <PenTool className="w-6 h-6" />,
-        glow: "251, 191, 36", // Amber
-        template: "[Service Request: Content & Copywriting]\n\nI need specialized writing (Medical/Tech/Web). Topic & Word Count: "
+        price: "$30 – $80",
+        desc: "Product descriptions, landing page copy, homepage rewrite. Per-page or per-project.",
+        delivery: "Per project",
+        color: "text-pink-400",
+        glow: "236, 72, 153",
+        template: "[Service Request: Content & Copy]\n\nI need professional copywriting. Scope: ",
     },
     {
-        title: "Author & Manuscript",
-        subtitle: "EDITING_SUITE",
-        desc: "Developmental flow, structure, and pacing without killing your voice. Proofreading with a reader-first mindset for fiction and non-fiction.",
-        rates: [
-            "Dev Editing: Custom Pricing",
-            "Proofreading: $0.05 – $0.07 / word"
-        ],
-        color: "text-emerald-400",
-        bg: "bg-emerald-500",
-        shadow: "shadow-emerald-500/20",
-        icon: <BookOpen className="w-6 h-6" />,
-        glow: "52, 211, 153", // Emerald
-        template: "[Service Request: Manuscript Editing]\n\nI need developmental editing or proofreading. Genre & Length: "
-    }
+        title: "Retainer / Maintenance",
+        price: "$50 – $100/mo",
+        desc: "Plugin updates, performance checks, 2 hours of monthly edits included.",
+        delivery: "Monthly",
+        color: "text-cyan-400",
+        glow: "6, 182, 212",
+        template: "[Service Request: Monthly Retainer]\n\nI need ongoing maintenance for my site. Details: ",
+    },
 ];
-
-const managementService = {
-    title: "Community & Social Mgmt",
-    subtitle: "GUILD_LEADERSHIP",
-    price: "$400 – $1,000 / month",
-    desc: "Active moderation, conflict handling, and engagement strategies for Discord servers or Facebook groups. Includes localization support in English, Bangla, Hindi, and German.",
-    color: "text-indigo-400",
-    bg: "bg-indigo-500",
-    shadow: "shadow-indigo-500/20",
-    icon: <Users className="w-6 h-6" />,
-    glow: "129, 140, 248", // Indigo
-    template: "[Service Request: Community Management]\n\nI need moderation and engagement leadership. Platform & Goals: "
-};
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -112,22 +79,12 @@ const itemVariants: Variants = {
     }
 };
 
-const hoverVariants: Variants = {
-    hover: {
-        y: -8,
-        scale: 1.02,
-        transition: { type: "spring", stiffness: 400, damping: 25 } // Snappy game feel
-    }
-};
-
 export default function Services() {
 
     const handleServiceClick = (template: string) => {
-        // Dispatch Custom Event
         const event = new CustomEvent('prefill-contact', { detail: template });
         window.dispatchEvent(event);
 
-        // Smooth Scroll to Contact
         const contactSection = document.getElementById("contact");
         if (contactSection) {
             contactSection.scrollIntoView({ behavior: "smooth" });
@@ -135,21 +92,18 @@ export default function Services() {
     };
 
     return (
-        <section id="services" className="relative w-full py-24 px-6 flex flex-col items-center overflow-hidden">
-
-
-
+        <section id="services" className="relative w-full section-spacing px-6 flex flex-col items-center overflow-hidden">
             <div className="relative z-10 max-w-6xl w-full">
 
                 {/* Header */}
                 <motion.div
-                    initial={{ opacity: 0, y: 60, scale: 0.9 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    viewport={{ once: false, amount: 0.3 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-center mb-16"
+                    className="text-center mb-20"
                 >
-                    <span className="inline-block py-1 px-3 rounded-full bg-[var(--glass-surface)] border border-[var(--glass-border)] text-xs text-[var(--text-secondary)] font-mono tracking-widest uppercase mb-4">
+                    <span className="inline-block py-1 px-3 rounded-full glass-pill text-xs text-[var(--text-secondary)] font-mono tracking-widest uppercase mb-4">
                         The Market
                     </span>
                     <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] leading-normal">
@@ -157,145 +111,64 @@ export default function Services() {
                     </h2>
                 </motion.div>
 
-                <motion.div variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.2 }}>
-
-                    {/* ROW 1: Web Dev Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                        {webDevServices.map((service, idx) => (
+                <motion.div variants={containerVariants} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {pricingCards.map((card, idx) => (
                             <motion.div
                                 key={idx}
                                 variants={itemVariants}
-                                whileHover="hover"
-                                onClick={() => handleServiceClick(service.template)}
-                                className={clsx(
-                                    "glass-panel group p-6 md:p-8 rounded-[24px]",
-                                    "hover:bg-[var(--hover-bg)] hover:border-[var(--glass-highlight)]",
-                                    "transition-all duration-300 flex flex-col relative overflow-hidden cursor-pointer"
-                                )}
+                                onClick={() => handleServiceClick(card.template)}
+                                className="liquid-glass group relative p-8 flex flex-col cursor-pointer overflow-hidden"
                                 style={{
-                                    "--hover-bg": `rgba(${service.glow}, 0.05)`
-                                } as React.CSSProperties}
+                                    transition: "all 0.3s ease",
+                                }}
+                                onMouseEnter={(e) => {
+                                    const el = e.currentTarget as HTMLElement;
+                                    el.style.backdropFilter = "blur(40px) saturate(200%)";
+                                    el.style.borderColor = `rgba(${card.glow}, 0.25)`;
+                                    el.style.boxShadow = `0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px rgba(${card.glow}, 0.15)`;
+                                }}
+                                onMouseLeave={(e) => {
+                                    const el = e.currentTarget as HTMLElement;
+                                    el.style.backdropFilter = "blur(24px) saturate(180%)";
+                                    el.style.borderColor = "rgba(255, 255, 255, 0.10)";
+                                    el.style.boxShadow = "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)";
+                                }}
                             >
-                                <motion.div variants={hoverVariants} className="absolute inset-0" /> {/* Dummy logic mostly, variants applied to parent usually propagates but here we want parent transform */}
-
-                                {/* Inner Glow on Hover */}
-
-
-                                <div className={clsx("w-12 h-12 rounded-xl flex items-center justify-center mb-6 bg-[var(--text-primary)]/5 group-hover:bg-[var(--text-primary)]/10 transition-colors z-10", service.color)}>
-                                    <motion.div variants={{ hover: { scale: 1.2, rotate: 5 } }} transition={{ type: "spring", stiffness: 300 }}>
-                                        {service.icon}
-                                    </motion.div>
+                                {/* Delivery badge - top right */}
+                                <div className="absolute top-4 right-4">
+                                    <span className="glass-pill px-3 py-1 text-[10px] font-mono text-[var(--text-secondary)] uppercase tracking-wider">
+                                        {card.delivery}
+                                    </span>
                                 </div>
-                                <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2 z-10 transition-colors">{service.title}</h3>
-                                <p className="text-xs font-mono text-[var(--text-secondary)] mb-4 tracking-widest uppercase z-10">{service.subtitle}</p>
-                                <p className="text-[var(--text-secondary)] text-sm leading-relaxed mb-8 flex-grow z-10 group-hover:text-[var(--text-primary)] transition-colors">
-                                    {service.desc}
+
+                                {/* Title */}
+                                <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2 pr-20">{card.title}</h3>
+
+                                {/* Price - largest element */}
+                                <p className={clsx("text-3xl md:text-4xl font-bold mb-4 tracking-tight", card.color)}>
+                                    {card.price}
                                 </p>
 
-                                <div className="space-y-3 mb-8 z-10">
-                                    {service.features.map((feature, fIdx) => (
-                                        <div key={fIdx} className="flex items-center gap-2 text-xs text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">
-                                            <div className={clsx("w-1.5 h-1.5 rounded-full", service.bg)} />
-                                            {feature}
-                                        </div>
-                                    ))}
-                                </div>
+                                {/* Description */}
+                                <p className="text-sm text-[var(--text-secondary)] leading-relaxed flex-grow group-hover:text-[var(--text-primary)] transition-colors">
+                                    {card.desc}
+                                </p>
 
-                                <div className="pt-6 border-t border-[var(--glass-border)] flex items-center justify-between z-10">
-                                    <span className={clsx("text-lg font-bold group-hover:scale-105 transition-transform origin-left", service.color)}>{service.price}</span>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    {/* ROW 2: Creative Services */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        {creativeServices.map((service, idx) => (
-                            <motion.div
-                                key={idx}
-                                variants={itemVariants}
-                                whileHover="hover"
-                                onClick={() => handleServiceClick(service.template)}
-                                className={clsx(
-                                    "glass-panel group p-6 md:p-8 rounded-[24px]",
-                                    "hover:bg-[var(--hover-bg)] hover:border-[var(--glass-highlight)]",
-                                    "transition-all duration-300 flex flex-col items-start gap-4 relative overflow-hidden cursor-pointer"
-                                )}
-                                style={{
-                                    "--hover-bg": `rgba(${service.glow}, 0.05)`
-                                } as React.CSSProperties}
-                            >
-
-
-                                <div className="flex items-start gap-6 w-full z-10">
-                                    <div className={clsx("shrink-0 w-12 h-12 rounded-xl flex items-center justify-center bg-[var(--text-primary)]/5 group-hover:bg-[var(--text-primary)]/10 transition-colors", service.color)}>
-                                        <motion.div variants={{ hover: { scale: 1.2, rotate: 5 } }} transition={{ type: "spring", stiffness: 300 }}>
-                                            {service.icon}
-                                        </motion.div>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-xl font-bold text-[var(--text-primary)] mb-1">{service.title}</h3>
-                                        <p className="text-xs font-mono text-[var(--text-secondary)] mb-3 tracking-widest uppercase">{service.subtitle}</p>
-                                        <p className="text-[var(--text-secondary)] text-sm leading-relaxed group-hover:text-[var(--text-primary)] transition-colors">
-                                            {service.desc}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Rates Section */}
-                                <div className="mt-auto pt-6 border-t border-[var(--glass-border)] w-full z-10">
-                                    <div className="space-y-2">
-                                        {service.rates.map((rate, rIdx) => (
-                                            <div key={rIdx} className="flex items-center gap-2 text-xs font-mono text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">
-                                                <div className={clsx("w-1.5 h-1.5 rounded-full", service.bg)} />
-                                                {rate}
-                                            </div>
-                                        ))}
-                                    </div>
+                                {/* CTA indicator */}
+                                <div className="mt-6 pt-4 border-t border-[rgba(255,255,255,0.06)]">
+                                    <span className="text-xs font-mono text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--text-secondary)] transition-colors">
+                                        Click to inquire →
+                                    </span>
                                 </div>
                             </motion.div>
                         ))}
                     </div>
-
-                    {/* ROW 3: Management */}
-                    <motion.div
-                        variants={itemVariants}
-                        whileHover="hover"
-                        onClick={() => handleServiceClick(managementService.template)}
-                        className={clsx(
-                            "glass-panel group p-6 md:p-8 rounded-[24px] will-change-transform", // Added hint
-                            "hover:bg-[var(--hover-bg)] hover:border-[var(--glass-highlight)]",
-                            "transition-all duration-300 flex flex-col md:flex-row items-center text-center md:text-left gap-8 mb-8 relative overflow-hidden cursor-pointer"
-                        )}
-                        style={{
-                            "--hover-bg": `rgba(${managementService.glow}, 0.05)`
-                        } as React.CSSProperties}
-                    >
-
-
-                        <div className={clsx("shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center bg-[var(--text-primary)]/5 group-hover:bg-[var(--text-primary)]/10 transition-colors z-10", managementService.color)}>
-                            <motion.div variants={{ hover: { scale: 1.2, rotate: -5 } }} transition={{ type: "spring", stiffness: 300 }}>
-                                {managementService.icon}
-                            </motion.div>
-                        </div>
-                        <div className="flex-grow z-10">
-                            <h3 className="text-2xl font-bold text-[var(--text-primary)] mb-2">{managementService.title}</h3>
-                            <p className="text-xs font-mono text-[var(--text-secondary)] mb-3 tracking-widest uppercase">{managementService.subtitle}</p>
-                            <p className="text-[var(--text-secondary)] max-w-2xl text-lg leading-relaxed mb-4 md:mb-0 group-hover:text-[var(--text-primary)] transition-colors">
-                                {managementService.desc}
-                            </p>
-                        </div>
-                        <div className="shrink-0 z-10">
-                            <span className={clsx("text-xl font-bold block text-center md:text-right mb-1 group-hover:scale-105 transition-transform", managementService.color)}>{managementService.price}</span>
-                            <span className="text-xs text-[var(--text-secondary)] uppercase tracking-widest block text-center md:text-right">Retainer</span>
-                        </div>
-                    </motion.div>
 
                     {/* Rules of Engagement */}
                     <motion.div
                         variants={itemVariants}
-                        whileHover={{ scale: 1.01 }}
-                        className="px-6 py-6 rounded-2xl bg-[var(--glass-surface)] border border-[var(--glass-border)] flex flex-col md:flex-row items-start md:items-center gap-6 text-xs text-[var(--text-secondary)] hover:border-[var(--glass-highlight)] hover:bg-[var(--glass-highlight)] transition-colors cursor-help"
+                        className="liquid-glass mt-8 px-6 py-6 flex flex-col md:flex-row items-start md:items-center gap-6 text-xs text-[var(--text-secondary)]"
                     >
                         <div className="flex items-center gap-2 text-rose-400 shrink-0">
                             <span className="font-bold uppercase tracking-wider text-sm">Rules of Engagement</span>
@@ -304,7 +177,7 @@ export default function Services() {
                         <div className="flex flex-col md:flex-row gap-4 md:gap-8 w-full">
                             <div className="flex-1">
                                 <span className="text-[var(--text-primary)] font-bold block mb-1">Hosting</span>
-                                Hosting, domains & plugins are client’s responsibility.
+                                Hosting, domains & plugins are client&apos;s responsibility.
                             </div>
                             <div className="flex-1">
                                 <span className="text-[var(--text-primary)] font-bold block mb-1">Payments</span>
@@ -316,7 +189,6 @@ export default function Services() {
                             </div>
                         </div>
                     </motion.div>
-
                 </motion.div>
             </div>
         </section>

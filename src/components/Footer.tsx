@@ -1,9 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUp, Terminal, Circle } from "lucide-react";
-import clsx from "clsx";
-import MysticQuote from "@/components/MysticQuote";
+import { ArrowUp } from "lucide-react";
 
 export default function Footer() {
 
@@ -12,10 +10,9 @@ export default function Footer() {
     };
 
     return (
-        <footer className="w-full relative overflow-hidden pt-24 pb-12 bg-[var(--bg-deep)] transition-colors duration-1000 text-[var(--text-primary)]">
+        <footer className="w-full relative overflow-hidden pt-24 pb-12 bg-[rgba(255,255,255,0.01)] backdrop-blur-sm border-t border-[var(--glass-border)] transition-colors duration-1000 text-[var(--text-primary)]">
             {/* --- Glass/Blur Top Effect --- */}
             <div className="absolute inset-0 pointer-events-none flex justify-center">
-                {/* Subtle Glow - darker in light mode? Or variable based */}
                 <div className="absolute top-0 w-full h-[200px] -translate-y-[80%] bg-[var(--text-primary)]/[0.03] blur-[150px] rounded-[100%]" />
                 <div className="absolute top-0 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-[var(--glass-border)] to-transparent" />
             </div>
@@ -26,7 +23,7 @@ export default function Footer() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: false }}
+                    viewport={{ once: true }}
                     className="flex items-center gap-2 mb-10"
                 >
                     <div className="w-8 h-8 rounded-lg bg-[var(--text-primary)]/5 flex items-center justify-center border border-[var(--glass-border)] backdrop-blur-md">
@@ -35,9 +32,11 @@ export default function Footer() {
                     <span className="text-xl font-bold tracking-tight text-[var(--text-primary)]">Omieo<span className="text-[var(--text-secondary)]">.sys</span></span>
                 </motion.div>
 
-                {/* Mystic Quote */}
-                <div className="mb-16">
-                    <MysticQuote text="Stars can't shine without darkness." author="Unknown" />
+                {/* Tagline */}
+                <div className="mb-16 text-center max-w-md">
+                    <p className="text-sm md:text-base text-[var(--text-secondary)] italic font-medium leading-relaxed">
+                        &ldquo;There&apos;s not a lot I enjoy more than solving someone&apos;s actual problem.&rdquo;
+                    </p>
                 </div>
 
                 {/* Footer Bottom Layout */}
@@ -49,7 +48,7 @@ export default function Footer() {
                     {/* Scroll Top Button */}
                     <button
                         onClick={scrollToTop}
-                        className="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-[var(--glass-surface)] hover:bg-[var(--glass-highlight)] border border-[var(--glass-border)] transition-all cursor-pointer"
+                        className="group flex items-center gap-2 px-5 py-2.5 rounded-full glass-pill hover:bg-[rgba(255,255,255,0.08)] transition-all cursor-pointer"
                     >
                         <span className="text-[10px] font-mono text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors tracking-widest">RETURN_TO_SURFACE</span>
                         <ArrowUp className="w-3 h-3 text-[var(--text-tertiary)] group-hover:text-sky-400 transition-colors group-hover:-translate-y-1" />
